@@ -26,84 +26,31 @@ int main()
 {
     time_t beginTime,endTime;
     time(&beginTime);
-    cout << "beginTime = " << beginTime << endl;
-    cout << "Hello World!" << endl;
 
-    Vect v(0.,0.,0.);
-    Vect w(1.,0.,0.);
-    Ray r(v,w);
-
-    Vect O(0.,20.,0.);
+    int W = 512;
+    int H = 512;
+    /*
+    Vect C(0,0,55);
+    Vect O(0,0,0);
     double R = 10;
-    Sphere s(O,R);
+    Sphere S(O,R);
+    double fov = 60 * M_PI / 180;
+    */
+    vector<unsigned char> image(W*H * 3,0);
+    for (int i = 0 ; i < H; i++){
+        for (int j = 0 ; j < W ; j++){
+            //Vect u(j - W / 2,i - H / 2, - W / (2.*tan(fov/2)));
+            //Ray r(C,u);
 
-    cout << "Ray d'origine C(" << r.get_C()[0] << "," << r.get_C()[1] << "," << r.get_C()[2] << ")" << endl;
-    cout << "et de direction u(" << r.get_u()[0] << "," << r.get_u()[1] << "," << r.get_u()[2] << ")" << endl;
-
-    cin.get();
-
-    cout << "Sphere de rayon " << s.get_R() << " et de centre O("<< s.get_O()[0] << "," << s.get_O()[1] << "," << s.get_O()[2] << ")" << endl;
-
-    cin.get();
-
-    bool result = s.intersect(r);
-    string response;
-
-    if (result){
-        response = "Oui";
-    }
-    else{
-        response = "Non";
+            image[(i*W+j) * 3 + 0] = 255;
+            image[(i*W+j) * 3 + 1] = 0;
+            image[(i*W+j) * 3 + 2] = 0;
+        }
     }
 
-    cout << "Intersection Sphere-Ray ? : " << response << endl;
-
-    cin.get();
-
-    Vect O2(20.,0.,0.);
-    double R2 = 10;
-    Sphere s2(O2,R2);
-
-    cout << "Sphere de rayon " << s2.get_R() << " et de centre O("<< s2.get_O()[0] << "," << s2.get_O()[1] << "," << s2.get_O()[2] << ")" << endl;
-
-    cin.get();
-
-    result = s2.intersect(r);
-
-    if (result){
-        response = "Oui";
-    }
-    else{
-        response = "Non";
-    }
-
-    cout << "Intersection Sphere-Ray ? : " << response << endl;
-
-    cin.get();
-
-    Vect O3(0.,20.,0.);
-    double R3 = 50;
-    Sphere s3(O3,R3);
-
-    cout << "Sphere de rayon " << s3.get_R() << " et de centre O("<< s3.get_O()[0] << "," << s3.get_O()[1] << "," << s3.get_O()[2] << ")" << endl;
-
-    cin.get();
-
-    result = s3.intersect(r);
-
-    if (result){
-        response = "Oui";
-    }
-    else{
-        response = "Non";
-    }
-
-    cout << "Intersection Sphere-Ray ? : " << response << endl;
-
-    cin.get();
+    stbi_write_png("image_hello_world.png",W,H,3,&image[0],0);
 
     time(&endTime);
-    cout << "endTime = " << endTime << endl;
-    cout << "Cela dure " << difftime(endTime,beginTime) << " secondes !" << endl;
+    cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;
     return 0;
 }

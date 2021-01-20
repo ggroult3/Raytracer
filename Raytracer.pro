@@ -12,4 +12,6 @@ SOURCES += \
 HEADERS += \
     ray.h \
     sphere.h \
+    stb_image.h \
+    stb_image_write.h \
     vect.h
