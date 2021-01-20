@@ -10,6 +10,14 @@ public:
     double &operator[](int i);
     double sqrNorm();
     Vect get_normalized();
+    friend Vect operator+(const Vect& a, const Vect& b);
+    friend Vect operator-(const Vect& a, const Vect& b);
+    friend Vect operator-(const Vect& a);
+    friend Vect operator*(const Vect& a, double b);
+    friend Vect operator*(double a,const Vect& b);
+    friend Vect operator/(const Vect& a, double b);
+    friend double dot(const Vect& a,const Vect& b);
+    friend double sqr(double x);
 
 private:
     double coords[3];

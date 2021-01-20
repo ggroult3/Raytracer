@@ -1,7 +1,6 @@
 #include "ray.h"
 
-Ray::Ray(const Vect& C1, const Vect& u1)
-{
+Ray::Ray(const Vect& C1, const Vect& u1){
     C = C1;
     u = u1;
 }

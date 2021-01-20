@@ -18,38 +18,9 @@ using namespace std;
 
 #include <vect.h>
 #include <ray.h>
+#include <sphere.h>
 
-Vect operator+(const Vect& a, const Vect& b){
-    return Vect(a[0] + b[0],a[1] + b[1],a[2] + b[2]);
-}
 
-Vect operator-(const Vect& a, const Vect& b){
-    return Vect(a[0] - b[0],a[1] - b[1],a[2] - b[2]);
-}
-
-Vect operator-(const Vect& a){
-    return Vect(-a[0],-a[1],-a[2]);
-}
-
-Vect operator*(const Vect& a, double b){
-    return Vect(a[0]*b,a[1]*b,a[2]*b);
-}
-
-Vect operator*(double a,const Vect& b){
-    return Vect(a*b[0],a*b[1],a*b[2]);
-}
-
-Vect operator/(const Vect& a, double b){
-    return Vect(a[0]/b,a[1]/b,a[2]/b);
-}
-
-double dot(const Vect& a,const Vect& b){
-    return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
-}
-
-double sqr(double x){
-    return x*x;
-}
 
 int main()
 {
@@ -58,15 +29,79 @@ int main()
     cout << "beginTime = " << beginTime << endl;
     cout << "Hello World!" << endl;
 
-    Vect v(0.,2.,3.);
-    Vect w(9.,8.,7.);
+    Vect v(0.,0.,0.);
+    Vect w(1.,0.,0.);
     Ray r(v,w);
 
-    cout << "R.C = (" << r.get_C()[0] << "," << r.get_C()[1] << "," << r.get_C()[2] << ")" << endl;
+    Vect O(0.,20.,0.);
+    double R = 10;
+    Sphere s(O,R);
+
+    cout << "Ray d'origine C(" << r.get_C()[0] << "," << r.get_C()[1] << "," << r.get_C()[2] << ")" << endl;
+    cout << "et de direction u(" << r.get_u()[0] << "," << r.get_u()[1] << "," << r.get_u()[2] << ")" << endl;
 
     cin.get();
 
-    cout << "Norme de u = " << sqrt(r.get_u().sqrNorm()) << endl;
+    cout << "Sphere de rayon " << s.get_R() << " et de centre O("<< s.get_O()[0] << "," << s.get_O()[1] << "," << s.get_O()[2] << ")" << endl;
+
+    cin.get();
+
+    bool result = s.intersect(r);
+    string response;
+
+    if (result){
+        response = "Oui";
+    }
+    else{
+        response = "Non";
+    }
+
+    cout << "Intersection Sphere-Ray ? : " << response << endl;
+
+    cin.get();
+
+    Vect O2(20.,0.,0.);
+    double R2 = 10;
+    Sphere s2(O2,R2);
+
+    cout << "Sphere de rayon " << s2.get_R() << " et de centre O("<< s2.get_O()[0] << "," << s2.get_O()[1] << "," << s2.get_O()[2] << ")" << endl;
+
+    cin.get();
+
+    result = s2.intersect(r);
+
+    if (result){
+        response = "Oui";
+    }
+    else{
+        response = "Non";
+    }
+
+    cout << "Intersection Sphere-Ray ? : " << response << endl;
+
+    cin.get();
+
+    Vect O3(0.,20.,0.);
+    double R3 = 50;
+    Sphere s3(O3,R3);
+
+    cout << "Sphere de rayon " << s3.get_R() << " et de centre O("<< s3.get_O()[0] << "," << s3.get_O()[1] << "," << s3.get_O()[2] << ")" << endl;
+
+    cin.get();
+
+    result = s3.intersect(r);
+
+    if (result){
+        response = "Oui";
+    }
+    else{
+        response = "Non";
+    }
+
+    cout << "Intersection Sphere-Ray ? : " << response << endl;
+
+    cin.get();
+
     time(&endTime);
     cout << "endTime = " << endTime << endl;
     cout << "Cela dure " << difftime(endTime,beginTime) << " secondes !" << endl;

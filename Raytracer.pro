@@ -6,8 +6,10 @@ CONFIG -= qt
 SOURCES += \
         main.cpp \
         ray.cpp \
+        sphere.cpp \
         vect.cpp
 
 HEADERS += \
     ray.h \
+    sphere.h \
     vect.h
