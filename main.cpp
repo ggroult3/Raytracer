@@ -17,6 +17,7 @@ using namespace std;
 //#define M_PI 3.141592653589793238562;
 
 #include <vect.h>
+#include <ray.h>
 
 Vect operator+(const Vect& a, const Vect& b){
     return Vect(a[0] + b[0],a[1] + b[1],a[2] + b[2]);
@@ -56,7 +57,16 @@ int main()
     time(&beginTime);
     cout << "beginTime = " << beginTime << endl;
     cout << "Hello World!" << endl;
+
+    Vect v(0.,2.,3.);
+    Vect w(9.,8.,7.);
+    Ray r(v,w);
+
+    cout << "R.C = (" << r.get_C()[0] << "," << r.get_C()[1] << "," << r.get_C()[2] << ")" << endl;
+
     cin.get();
+
+    cout << "Norme de u = " << sqrt(r.get_u().sqrNorm()) << endl;
     time(&endTime);
     cout << "endTime = " << endTime << endl;
     cout << "Cela dure " << difftime(endTime,beginTime) << " secondes !" << endl;
