@@ -1,5 +1,7 @@
 #include "vect.h"
 #include <math.h>
+#include <iostream>
+using namespace std;
 
 Vect::Vect(double x,double y,double z){
     coords[0] = x;
