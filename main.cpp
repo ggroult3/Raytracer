@@ -20,7 +20,7 @@ using namespace std;
 #include <ray.h>
 #include <sphere.h>
 
-
+#include <algorithm>
 
 int main()
 {
@@ -37,26 +37,34 @@ int main()
     double R = 10; // Rayon de la sphère
     Sphere S(O,R);
 
+    double I = 1E7;// Intensité lumineuse
+    Vect rho(1,0,0);
+    Vect L(-10,20,40);// Coordonnees de la lampe
+
     vector<unsigned char> image(W*H * 3,0);
     for (int i = 0 ; i < H; i++){
         for (int j = 0 ; j < W ; j++){
             Vect u(j - W / 2,i - H / 2, - W / (2.*tan(fov/2))); // Vecteur directeur du rayon émis de la caméra
             u = u.get_normalized(); // Le vecteur directeur doit être unitaire
+            Vect P,N;
             Ray r(C,u);
-            bool inter = S.intersect(r); // Determine s'il y a intersection entre la sphere et le rayon : si oui, le pixel est blanc, sinon il est noir
+            bool inter = S.intersect(r,P,N); // Determine s'il y a intersection entre la sphere et le rayon : si oui, P indique le point d'intersection sphere-ray et N le vecteur normale a la sphere au point P
             Vect color(0,0,0);
             if (inter){
-                color = Vect(255,255,255);
+                Vect PL = L - P;
+                double d = sqrt(PL.sqrNorm());
+                color = I/(4*M_PI*d*d) * rho/M_PI * max(0.,dot(N,PL/d));
             }
 
-            image[(i*W+j) * 3 + 0] = color[0];
-            image[(i*W+j) * 3 + 1] = color[1];
-            image[(i*W+j) * 3 + 2] = color[2];
+            // On inverse l'image en remplacant (i*W+j) par ((H - i -1)*W+j)
+            image[((H - i -1)*W+j) * 3 + 0] = min(255.,color[0]);
+            image[((H - i -1)*W+j) * 3 + 1] = min(255.,color[1]);
+            image[((H - i -1)*W+j) * 3 + 2] = min(255.,color[2]);
 
         }
     }
 
-    stbi_write_png("image_detect_sphere.png",W,H,3,&image[0],0);
+    stbi_write_png("image_detect_light.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;

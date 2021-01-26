@@ -10,7 +10,7 @@ public:
     Sphere(const Vect& O, double R);
     Vect& get_O();
     double get_R();
-    bool intersect(Ray& r);
+    bool intersect(Ray& r,Vect& P,Vect& N);
 
 private:
     Vect O;
