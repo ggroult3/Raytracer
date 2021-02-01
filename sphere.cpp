@@ -4,9 +4,10 @@
 
 using namespace std;
 
-Sphere::Sphere(const Vect& O1,double R1){
+Sphere::Sphere(const Vect& O1,double R1,const Vect& albedo1){
     O = O1;
     R = R1;
+    albedo = albedo1;
 }
 
 Vect& Sphere::get_O(){
@@ -17,7 +18,11 @@ double Sphere::get_R(){
     return R;
 }
 
-bool Sphere::intersect(Ray &r,Vect& P,Vect& N){
+Vect& Sphere::get_albedo(){
+    return albedo;
+}
+
+bool Sphere::intersect(Ray &r,Vect& P,Vect& N,double& t){
     // solves a*t^2 + b*t + c = 0
     double a = 1;
     double b = 2 * dot(r.get_u(),r.get_C() - O);
@@ -30,7 +35,6 @@ bool Sphere::intersect(Ray &r,Vect& P,Vect& N){
     double t2 = (- b + sqDelta) / (2 * a);
     if (t2 < 0) return false;
 
-    double t;
     double t1 = (- b - sqDelta) / (2 * a);
     if (t1 > 0)
         t = t1;
