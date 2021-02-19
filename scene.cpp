@@ -22,8 +22,8 @@ int Scene::get_objects_size(){
     return objects.size();
 }
 
-bool Scene::intersect(Ray &r, Vect &P, Vect &N, Vect &albedo){
-    double t = 1E10;
+bool Scene::intersect(Ray &r, Vect &P, Vect &N, Vect &albedo, double &t){
+    t = 1E10;
     bool has_inter = false;
     for (int i = 0 ; i < get_objects_size(); i++){
         Vect localP, localN;
