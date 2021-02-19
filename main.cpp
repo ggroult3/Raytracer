@@ -52,9 +52,11 @@ int main()
     scene.push(Splafond);
     scene.push(Ssol);
 
-    double I = 1E7;// Intensité lumineuse
-    Vect rho(1,0,0);
+    // double I = 1E7;// Intensité lumineuse sans correction gamma
+    double I = 5E9;// Intensité lumineuse avec correction gamma
     Vect L(-10,20,40);// Coordonnees de la lampe
+    scene.set_I(I);
+    scene.set_L(L);
 
     vector<unsigned char> image(W*H * 3,0);
     for (int i = 0 ; i < H; i++){
@@ -72,14 +74,20 @@ int main()
             }
 
             // On inverse l'image en remplacant (i*W+j) par ((H - i -1)*W+j)
+            /*
             image[((H - i -1)*W+j) * 3 + 0] = min(255.,color[0]);
             image[((H - i -1)*W+j) * 3 + 1] = min(255.,color[1]);
             image[((H - i -1)*W+j) * 3 + 2] = min(255.,color[2]);
+            */
 
+            // On applique la correction gamma à l'image
+            image[((H - i -1)*W+j) * 3 + 0] = min(255.,pow(color[0],0.45));
+            image[((H - i -1)*W+j) * 3 + 1] = min(255.,pow(color[1],0.45));
+            image[((H - i -1)*W+j) * 3 + 2] = min(255.,pow(color[2],0.45));
         }
     }
 
-    stbi_write_png("image_create_scene.png",W,H,3,&image[0],0);
+    stbi_write_png("image_correction_gamma.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;
