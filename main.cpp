@@ -21,7 +21,6 @@ using namespace std;
 #include <sphere.h>
 #include <scene.h>
 
-#include <algorithm>
 
 int main()
 {
@@ -37,13 +36,13 @@ int main()
     double fov = 60 * M_PI / 180; // Champ de vision de la camera
 
 
-    Sphere S1(Vect(0,0,0),10,Vect(1.,0.3,0.2));
-    Sphere Ssol(Vect(0,-1000,0),990,Vect(1.,1.,1.));
-    Sphere Smur1(Vect(-1000,0,0),940,Vect(1.,0.,0.));
-    Sphere Smur2(Vect(1000,0,0),940,Vect(0.,1.,0.));
-    Sphere Smur3(Vect(0,0,-1000),940,Vect(0.,0.,1.));
-    Sphere Smur4(Vect(0,0,1000),940,Vect(1.,1.,0.));
-    Sphere Splafond(Vect(0,1000,0),940,Vect(1.,1.,1.));
+    Sphere S1(Vect(0,0,0),10.,Vect(1.,0.3,0.2),true);
+    Sphere Ssol(Vect(0,-1000,0),990.,Vect(1.,1.,1.));
+    Sphere Smur1(Vect(-1000,0,0),940.,Vect(1.,0.,0.));
+    Sphere Smur2(Vect(1000,0,0),940.,Vect(0.,1.,0.));
+    Sphere Smur3(Vect(0,0,-1000),940.,Vect(0.,0.,1.));
+    Sphere Smur4(Vect(0,0,1000),940.,Vect(1.,1.,0.));
+    Sphere Splafond(Vect(0,1000,0),940.,Vect(1.,1.,1.));
     scene.push(S1);
     scene.push(Smur1);
     scene.push(Smur2);
@@ -63,27 +62,8 @@ int main()
         for (int j = 0 ; j < W ; j++){
             Vect u(j - W / 2,i - H / 2, - W / (2.*tan(fov/2))); // Vecteur directeur du rayon émis de la caméra
             u = u.get_normalized(); // Le vecteur directeur doit être unitaire
-            Vect P,N,albedo;
             Ray r(C,u);
-            double t;
-            bool inter = scene.intersect(r,P,N,albedo,t); // Determine s'il y a intersection entre la sphere et le rayon : si oui, P indique le point d'intersection sphere-ray et N le vecteur normale a la sphere au point P
-            Vect color;
-            if (inter){
-                Vect PL = L - P;
-                double d = sqrt(PL.sqrNorm());
-                Vect shadowP, shadowN, shadowAlbedo;
-                double shadowt;
-                Ray shadowRay(P+0.001*N,PL/d); // On decale legerement le rayon pour eviter les effets de bords avec la sphere (suppression du bruit d'ombre)
-                bool shadowInter = scene.intersect(shadowRay,shadowP,shadowN,shadowAlbedo,shadowt); // Determine s'il y a intersection entre la sphère et un rayon émis de la source de lumière
-                if (shadowInter && shadowt < d){ // S'il y a intersection, on vérifie que la distance le point d'intersection et le sol soit inférieur à la distance sol-source de lumière. Si oui, on envoie un pixel noir, sinon la couleur attendue
-                    color = Vect(0.,0.,0.);
-                }
-                else{
-                    color = I/(4*M_PI*d*d) * albedo/M_PI * max(0.,dot(N,PL/d));
-                }
-
-            }
-
+            Vect color = scene.getColor(r,0);
             // On inverse l'image en remplacant (i*W+j) par ((H - i -1)*W+j)
             /*
             image[((H - i -1)*W+j) * 3 + 0] = min(255.,color[0]);
@@ -98,7 +78,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_ombre_portee.png",W,H,3,&image[0],0);
+    stbi_write_png("image_mirror.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;
