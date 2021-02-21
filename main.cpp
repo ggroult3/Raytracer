@@ -21,11 +21,30 @@ using namespace std;
 #include <sphere.h>
 #include <scene.h>
 
+#include <random>
+static default_random_engine engine(52);
+static uniform_real_distribution<double> uniform(0,1);
+
+void integrateCos(){
+    int N = 10000;
+    double sigma = 0.25;
+    double s = 0;
+    for (int i = 0; i < N; i++){
+        double u1 = uniform(engine);
+        double u2 = uniform(engine);
+        double xi = sigma * cos(2 * M_PI * u1) * sqrt(-2 * log(u2));
+        double p = 1 / (sigma*sqrt(2 * M_PI)) * exp(-xi * xi / (2 * sigma * sigma));
+        s = s + pow(cos(xi),10) / p / N;
+    }
+    cout << s << endl;
+}
 
 int main()
 {
     time_t beginTime,endTime;
     time(&beginTime);
+
+    integrateCos();
 
     int W = 512; // Largeur de l'image
     int H = 512; // Hauteur de l'image

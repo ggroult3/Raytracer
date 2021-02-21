@@ -50,6 +50,10 @@ Vect operator/(const Vect& a, double b){
     return Vect(a[0]/b,a[1]/b,a[2]/b);
 }
 
+Vect cross(const Vect& a,const Vect& b){
+    return Vect(a[1] * b[2] - b[1] * a[2],a[2]*b[0]-b[2]*a[0],a[0]*b[1]-b[0]*a[1]);
+}
+
 double dot(const Vect& a,const Vect& b){
     return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
 }
