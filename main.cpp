@@ -36,7 +36,7 @@ int main()
     double fov = 60 * M_PI / 180; // Champ de vision de la camera
 
 
-    Sphere S1(Vect(0,0,0),10.,Vect(1.,0.3,0.2),true);
+    Sphere S1(Vect(0,0,0),10.,Vect(1.,0.3,0.2),false,true);
     Sphere Ssol(Vect(0,-1000,0),990.,Vect(1.,1.,1.));
     Sphere Smur1(Vect(-1000,0,0),940.,Vect(1.,0.,0.));
     Sphere Smur2(Vect(1000,0,0),940.,Vect(0.,1.,0.));
@@ -78,7 +78,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_mirror.png",W,H,3,&image[0],0);
+    stbi_write_png("image_transparent.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;

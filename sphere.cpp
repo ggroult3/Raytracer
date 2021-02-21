@@ -9,6 +9,7 @@ Sphere::Sphere(const Vect& O1,double R1,const Vect& albedo1){
     R = R1;
     albedo = albedo1;
     isMirror = false;
+    isTransp = false;
 }
 
 Sphere::Sphere(const Vect& O1,double R1,const Vect& albedo1,bool isMirror1){
@@ -16,6 +17,15 @@ Sphere::Sphere(const Vect& O1,double R1,const Vect& albedo1,bool isMirror1){
     R = R1;
     albedo = albedo1;
     isMirror = isMirror1;
+    isTransp = false;
+}
+
+Sphere::Sphere(const Vect& O1,double R1,const Vect& albedo1,bool isMirror1,bool isTransp1){
+    O = O1;
+    R = R1;
+    albedo = albedo1;
+    isMirror = isMirror1;
+    isTransp = isTransp1;
 }
 
 Vect& Sphere::get_O(){
@@ -32,6 +42,10 @@ Vect& Sphere::get_albedo(){
 
 bool& Sphere::get_isMirror(){
     return isMirror;
+}
+
+bool& Sphere::get_isTransp(){
+    return isTransp;
 }
 
 bool Sphere::intersect(Ray &r,Vect& P,Vect& N,double& t){

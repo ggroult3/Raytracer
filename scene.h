@@ -17,7 +17,7 @@ public:
     void set_L(Vect L1);
     void push(Sphere object);
     int get_objects_size();
-    bool intersect(Ray& r,Vect& P,Vect& N,Vect& albedo,bool& mirror,double& t);
+    bool intersect(Ray& r,Vect& P,Vect& N,Vect& albedo,bool& mirror,bool& transp,double& t);
     Vect getColor(Ray& r,int rebond);
 private:
     double I;
