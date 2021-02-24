@@ -89,11 +89,20 @@ Vect Scene::getColor(Ray &r,int rebond){
                     color = I/(4*M_PI*d*d) * albedo/M_PI * max(0.,dot(N,PL/d));
                 }
 
-                return color;
-            }
 
+            }
+            // eclairage indirect
+            Vect omega_i = random_cos(N);
+            Ray rayOmega_i(P + 0.001*N,omega_i);
+            Vect indirectColor = getColor(rayOmega_i,rebond + 1);
+
+            color = color + albedo * indirectColor;
         }
 
+
+
     }
+
+    return color;
 
 }

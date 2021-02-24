@@ -14,11 +14,13 @@ public:
     friend Vect operator-(const Vect& a, const Vect& b);
     friend Vect operator-(const Vect& a);
     friend Vect operator*(const Vect& a, double b);
-    friend Vect operator*(double a,const Vect& b);
+    friend Vect operator*(const Vect& a,const Vect& b);
+    friend Vect operator*(double a, const Vect& b);
     friend Vect operator/(const Vect& a, double b);
     friend Vect cross(const Vect& a,const Vect& b);
     friend double dot(const Vect& a,const Vect& b);
     friend double sqr(double x);
+    friend Vect random_cos(const Vect& N);
 
 private:
     double coords[3];
