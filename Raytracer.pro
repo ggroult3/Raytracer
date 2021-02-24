@@ -17,3 +17,6 @@ HEADERS += \
     stb_image.h \
     stb_image_write.h \
     vect.h
+
+QMAKE_CXXFLAGS+= -fopenmp
+QMAKE_LFLAGS +=  -fopenmp

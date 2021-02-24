@@ -97,6 +97,7 @@ int main()
     int nbRays = 100;
 
     vector<unsigned char> image(W*H * 3,0);
+#pragma fomp parallel for schedule(dynamic,1);
     for (int i = 0 ; i < H; i++){
         for (int j = 0 ; j < W ; j++){
             Vect u(j - W / 2,i - H / 2, - W / (2.*tan(fov/2))); // Vecteur directeur du rayon émis de la caméra
