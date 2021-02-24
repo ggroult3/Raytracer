@@ -100,13 +100,27 @@ int main()
 #pragma fomp parallel for schedule(dynamic,1);
     for (int i = 0 ; i < H; i++){
         for (int j = 0 ; j < W ; j++){
+            /*
             Vect u(j - W / 2,i - H / 2, - W / (2.*tan(fov/2))); // Vecteur directeur du rayon émis de la caméra
             u = u.get_normalized(); // Le vecteur directeur doit être unitaire
             Ray r(C,u);
+            */
             Vect color(0,0,0);
 
-            for(int k = 0; k < nbRays; k++)
+            for(int k = 0; k < nbRays; k++){
+
+                // Anti-aliasing (=anti-crenelage)
+                double u1 = uniform(engine);
+                double u2 = uniform(engine);
+                double x1 = 0.25 * cos(2 * M_PI * u1) * sqrt(-2 * log(u2));
+                double x2 = 0.25 * sin(2 * M_PI * u1) * sqrt(-2 * log(u2));
+
+                Vect u(j - W / 2 + x2 +0.5,i - H / 2 +x1 + 0.5, - W / (2.*tan(fov/2))); // Vecteur directeur du rayon émis de la caméra
+                u = u.get_normalized(); // Le vecteur directeur doit être unitaire
+                Ray r(C,u);
+
                 color = color + scene.getColor(r,0);
+            }
             color = color / nbRays;
 
             // On inverse l'image en remplacant (i*W+j) par ((H - i -1)*W+j)
@@ -123,7 +137,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_eclairage_indirecte.png",W,H,3,&image[0],0);
+    stbi_write_png("image_anti_aliasing.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;
