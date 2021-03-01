@@ -120,7 +120,17 @@ int main()
 
                 Vect u(j - W / 2 + x2 +0.5,i - H / 2 +x1 + 0.5, - W / (2.*tan(fov/2))); // Vecteur directeur du rayon émis de la caméra
                 u = u.get_normalized(); // Le vecteur directeur doit être unitaire
-                Ray r(C,u);
+
+                // Effet de profondeur de champ
+                u1 = uniform(engine);
+                u2 = uniform(engine);
+                double x3 = 0.25 * cos(2 * M_PI * u1) * sqrt(-2 * log(u2));
+                double x4 = 0.25 * sin(2 * M_PI * u1) * sqrt(-2 * log(u2));
+
+                Vect target = C + 55 * u;
+                Vect Cprime = C + Vect(x3,x4,0);
+                Vect uprime = (target - Cprime).get_normalized();
+                Ray r(Cprime,uprime);
 
                 color = color + scene.getColor(r,0);
             }
@@ -140,7 +150,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_ombre_douce.png",W,H,3,&image[0],0);
+    stbi_write_png("image_fov.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;
