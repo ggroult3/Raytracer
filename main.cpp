@@ -65,10 +65,16 @@ int main()
 
     Scene scene;
 
+    // double I = 1E7;// Intensité lumineuse sans correction gamma
+    double I = 5E9;// Intensité lumineuse avec correction gamma
+    Vect L(-10,20,40);// Coordonnees de la lampe
+    scene.set_I(I);
+    scene.set_L(L);
+
     Vect C(0,0,55); // Position de la camera
     double fov = 60 * M_PI / 180; // Champ de vision de la camera
 
-
+    Sphere Slumiere(scene.get_L(), 5, Vect(1., 1, 1));
     Sphere S1(Vect(0,0,0),10,Vect(1.,0.3,0.2));
     Sphere S2(Vect(-20,0,0),10,Vect(1.,0.3,0.2),true);
     Sphere S3(Vect(20,0,0),10,Vect(1.,0.3,0.2),false,true);
@@ -78,6 +84,7 @@ int main()
     Sphere Smur3(Vect(0,0,-1000),940.,Vect(0.,0.,1.));
     Sphere Smur4(Vect(0,0,1000),940.,Vect(1.,1.,0.));
     Sphere Splafond(Vect(0,1000,0),940.,Vect(1.,1.,1.));
+    scene.push(Slumiere);
     scene.push(S1);
     scene.push(S2);
     scene.push(S3);
@@ -88,11 +95,7 @@ int main()
     scene.push(Splafond);
     scene.push(Ssol);
 
-    // double I = 1E7;// Intensité lumineuse sans correction gamma
-    double I = 5E9;// Intensité lumineuse avec correction gamma
-    Vect L(-10,20,40);// Coordonnees de la lampe
-    scene.set_I(I);
-    scene.set_L(L);
+
 
     int nbRays = 100;
 
@@ -137,7 +140,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_anti_aliasing.png",W,H,3,&image[0],0);
+    stbi_write_png("image_ombre_douce.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;
