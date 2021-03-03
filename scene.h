@@ -20,7 +20,7 @@ public:
     void push(Sphere object);
     int get_objects_size();
     bool intersect(Ray& r,Vect& P,Vect& N,Vect& albedo,bool& mirror,bool& transp,double& t,int& objectid);
-    Vect getColor(Ray& r,int rebond);
+    Vect getColor(Ray& r,int rebond,bool lastDiffus);
 private:
     double I;
     Vect L;

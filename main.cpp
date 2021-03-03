@@ -78,6 +78,9 @@ int main()
     Sphere S1(Vect(0,0,0),10,Vect(1.,0.3,0.2));
     Sphere S2(Vect(-20,0,0),10,Vect(1.,0.3,0.2),true);
     Sphere S3(Vect(20,0,0),10,Vect(1.,0.3,0.2),false,true);
+    Sphere S4(Vect(-10,20,-40),10,Vect(0.3,1.,0.2));
+    Sphere S5(Vect(10,10,20),5,Vect(0.3,0.2,1.),false,true);
+    Sphere S6(Vect(10,10,20),2.5,Vect(0.3,0.2,1.),false,true);
     Sphere Ssol(Vect(0,-1000,0),990.,Vect(1.,1.,1.));
     Sphere Smur1(Vect(-1000,0,0),940.,Vect(1.,0.,0.));
     Sphere Smur2(Vect(1000,0,0),940.,Vect(0.,1.,0.));
@@ -88,6 +91,9 @@ int main()
     scene.push(S1);
     scene.push(S2);
     scene.push(S3);
+    scene.push(S4);
+    scene.push(S5);
+    scene.push(S6);
     scene.push(Smur1);
     scene.push(Smur2);
     scene.push(Smur3);
@@ -132,7 +138,7 @@ int main()
                 Vect uprime = (target - Cprime).get_normalized();
                 Ray r(Cprime,uprime);
 
-                color = color + scene.getColor(r,0);
+                color = color + scene.getColor(r,0,false);
             }
             color = color / nbRays;
 

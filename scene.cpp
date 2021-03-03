@@ -36,7 +36,7 @@ int Scene::get_objects_size(){
 bool Scene::intersect(Ray &r, Vect &P, Vect &N, Vect &albedo, bool &mirror,bool &transp, double &t,int &objectid){
     t = 1E10;
     bool has_inter = false;
-    for (int i = 1 ; i < get_objects_size(); i++){
+    for (int i = 0 ; i < get_objects_size(); i++){
         Vect localP, localN;
         double localt;
         if (objects[i].intersect(r,localP,localN,localt) && localt < t){
@@ -47,12 +47,13 @@ bool Scene::intersect(Ray &r, Vect &P, Vect &N, Vect &albedo, bool &mirror,bool 
             N = localN;
             mirror = objects[i].get_isMirror();
             transp = objects[i].get_isTransp();
+            objectid = i;
         }
     }
     return has_inter;
 }
 
-Vect Scene::getColor(Ray &r,int rebond){
+Vect Scene::getColor(Ray &r,int rebond,bool lastDiffus){
     Vect P,N,albedo;
     double t;
     bool mirror,transp;
@@ -60,10 +61,10 @@ Vect Scene::getColor(Ray &r,int rebond){
     bool inter = intersect(r,P,N,albedo,mirror,transp,t,objectid); // Determine s'il y a intersection entre la sphere et le rayon : si oui, P indique le point d'intersection sphere-ray et N le vecteur normale a la sphere au point P
     Vect color(0.,0.,0.);
 
-    if (inter && rebond < 5){
+    if (inter && rebond < 10){
 
         if (objectid == 0){
-            if (rebond == 0){
+            if (rebond == 0 || !lastDiffus){
                 double I = get_I();
                 return Vect(I,I,I) / (4 * M_PI * M_PI * objects[0].get_R() * objects[0].get_R());
             }
@@ -75,7 +76,7 @@ Vect Scene::getColor(Ray &r,int rebond){
             if (mirror){
                 Vect reflectedDir = r.get_u() - 2 * dot(r.get_u(),N) * N;
                 Ray reflectedRay(P + 0.001*N,reflectedDir);
-                return getColor(reflectedRay,rebond + 1);
+                return getColor(reflectedRay,rebond + 1,false);
             }
             else {
                 if (transp){
@@ -92,7 +93,7 @@ Vect Scene::getColor(Ray &r,int rebond){
                     Vect refractedDir = Tt + Tn;
                     Ray refractedRay(P - 0.001*N2,refractedDir);
 
-                    return getColor(refractedRay,rebond + 1);
+                    return getColor(refractedRay,rebond + 1,false);
                 }
                 else {
                     //eclairage direct (premiere version)
@@ -123,7 +124,7 @@ Vect Scene::getColor(Ray &r,int rebond){
 
                     Vect shadowP, shadowN, shadowAlbedo;
                     double shadowt;
-                    Ray shadowRay(P+0.001*N,PL/d); // On decale legerement le rayon pour eviter les effets de bords avec la sphere (suppression du bruit d'ombre)
+                    Ray shadowRay(P+0.001*N,P_xprime/d); // On decale legerement le rayon pour eviter les effets de bords avec la sphere (suppression du bruit d'ombre)
                     bool shadowMirror,shadowTransp;
                     int objectid;
                     bool shadowInter = intersect(shadowRay,shadowP,shadowN,shadowAlbedo,shadowMirror,shadowTransp,shadowt,objectid); // Determine s'il y a intersection entre la sphère et un rayon émis de la source de lumière
@@ -131,7 +132,7 @@ Vect Scene::getColor(Ray &r,int rebond){
                         color = Vect(0.,0.,0.);
                     }
                     else {
-                        double proba = dot(-PL,omega) / (M_PI * objects[0].get_R() * objects[0].get_R());
+                        double proba = max(0.,dot(-PL,omega)) / (M_PI * objects[0].get_R() * objects[0].get_R());
                         double J = dot(omega, -P_xprime)/(d*d);
                         color = I / (4 * M_PI * M_PI * objects[0].get_R() * objects[0].get_R()) * albedo / M_PI * max(0.,dot(N,P_xprime)) * J / proba;
                     }
@@ -141,7 +142,7 @@ Vect Scene::getColor(Ray &r,int rebond){
                 // eclairage indirect
                 Vect omega_i = random_cos(N);
                 Ray rayOmega_i(P + 0.001*N,omega_i);
-                Vect indirectColor = getColor(rayOmega_i,rebond + 1);
+                Vect indirectColor = getColor(rayOmega_i,rebond + 1,true);
 
                 color = color + albedo * indirectColor;
             }
