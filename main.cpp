@@ -25,6 +25,9 @@ using namespace std;
 static default_random_engine engine(52);
 static uniform_real_distribution<double> uniform(0,1);
 
+#include <trianglemesh.h>
+#include <object.h>
+
 void integrateCos(){
     int N = 10000;
     double sigma = 0.25;
@@ -57,13 +60,13 @@ int main()
 {
     time_t beginTime,endTime;
     time(&beginTime);
-
     //integrateCos();
 
-    int W = 512; // Largeur de l'image
-    int H = 512; // Hauteur de l'image
+    int W = 128; // Largeur de l'image
+    int H = 128; // Hauteur de l'image
 
     Scene scene;
+
 
     // double I = 1E7;// Intensité lumineuse sans correction gamma
     double I = 5E9;// Intensité lumineuse avec correction gamma
@@ -71,35 +74,53 @@ int main()
     scene.set_I(I);
     scene.set_L(L);
 
+
+
     Vect C(0,0,55); // Position de la camera
     double fov = 60 * M_PI / 180; // Champ de vision de la camera
 
     Sphere Slumiere(scene.get_L(), 5, Vect(1., 1, 1));
-    Sphere S1(Vect(0,0,0),10,Vect(1.,0.3,0.2));
-    Sphere S2(Vect(-20,0,0),10,Vect(1.,0.3,0.2),true);
-    Sphere S3(Vect(20,0,0),10,Vect(1.,0.3,0.2),false,true);
-    Sphere S4(Vect(-10,20,-40),10,Vect(0.3,1.,0.2));
-    Sphere S5(Vect(10,10,20),5,Vect(0.3,0.2,1.),false,true);
-    Sphere S6(Vect(10,10,20),2.5,Vect(0.3,0.2,1.),false,true);
+    // Sphere S1(Vect(0,0,0),10,Vect(1.,0.3,0.2));
+    // Sphere S2(Vect(-20,0,0),10,Vect(1.,0.3,0.2),true);
+    // Sphere S3(Vect(20,0,0),10,Vect(1.,0.3,0.2),false,true);
+    // Sphere S4(Vect(-10,20,-40),10,Vect(0.3,1.,0.2));
+    // Sphere S5(Vect(10,10,20),5,Vect(0.3,0.2,1.),false,true);
+    // Sphere S6(Vect(10,10,20),2.5,Vect(0.3,0.2,1.),false,true);
     Sphere Ssol(Vect(0,-1000,0),990.,Vect(1.,1.,1.));
     Sphere Smur1(Vect(-1000,0,0),940.,Vect(1.,0.,0.));
     Sphere Smur2(Vect(1000,0,0),940.,Vect(0.,1.,0.));
     Sphere Smur3(Vect(0,0,-1000),940.,Vect(0.,0.,1.));
     Sphere Smur4(Vect(0,0,1000),940.,Vect(1.,1.,0.));
     Sphere Splafond(Vect(0,1000,0),940.,Vect(1.,1.,1.));
-    scene.push(Slumiere);
-    scene.push(S1);
-    scene.push(S2);
-    scene.push(S3);
-    scene.push(S4);
-    scene.push(S5);
-    scene.push(S6);
-    scene.push(Smur1);
-    scene.push(Smur2);
-    scene.push(Smur3);
-    scene.push(Smur4);
-    scene.push(Splafond);
-    scene.push(Ssol);
+    scene.push(&Slumiere);
+    // scene.push(&S1);
+    // scene.push(&S2);
+    // scene.push(&S3);
+    // scene.push(&S4);
+    // scene.push(&S5);
+    // scene.push(&S6);
+    scene.push(&Smur1);
+    scene.push(&Smur2);
+    scene.push(&Smur3);
+    scene.push(&Smur4);
+    scene.push(&Splafond);
+    scene.push(&Ssol);
+
+
+    TriangleMesh m(Vect(1.,1.,1.));
+
+    m.readOBJ("13463_Australian_Cattle_Dog_v3.obj");
+
+
+    for (int i = 0; i < m.vertices.size(); i++){
+        m.vertices[i][1] += 22;
+        swap(m.vertices[i][1],m.vertices[i][2]);
+    }
+    for (int i = 0; i < m.normals.size(); i++){
+        m.normals[i][1] += 22;
+        swap(m.normals[i][1],m.normals[i][2]);
+    }
+    scene.push(&m);
 
 
 
@@ -114,6 +135,7 @@ int main()
             u = u.get_normalized(); // Le vecteur directeur doit être unitaire
             Ray r(C,u);
             */
+
             Vect color(0,0,0);
 
             for(int k = 0; k < nbRays; k++){
@@ -132,7 +154,6 @@ int main()
                 u2 = uniform(engine);
                 double x3 = 0.25 * cos(2 * M_PI * u1) * sqrt(-2 * log(u2));
                 double x4 = 0.25 * sin(2 * M_PI * u1) * sqrt(-2 * log(u2));
-
                 Vect target = C + 55 * u;
                 Vect Cprime = C + Vect(x3,x4,0);
                 Vect uprime = (target - Cprime).get_normalized();
@@ -156,7 +177,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_fov.png",W,H,3,&image[0],0);
+    stbi_write_png("image_readOBJ_naive.png",W,H,3,&image[0],0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime,beginTime) << " seconde(s) !" << endl;

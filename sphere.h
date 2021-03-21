@@ -1,10 +1,11 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include<vect.h>
-#include<ray.h>
+#include <vect.h>
+#include <ray.h>
+#include <object.h>
 
-class Sphere
+class Sphere : public Object
 {
 public:
     Sphere(const Vect& O, double R, const Vect& albedo);

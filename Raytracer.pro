@@ -5,17 +5,23 @@ CONFIG -= qt
 
 SOURCES += \
         main.cpp \
+        object.cpp \
         ray.cpp \
         scene.cpp \
         sphere.cpp \
+        triangleindices.cpp \
+        trianglemesh.cpp \
         vect.cpp
 
 HEADERS += \
+    object.h \
     ray.h \
     scene.h \
     sphere.h \
     stb_image.h \
     stb_image_write.h \
+    triangleindices.h \
+    trianglemesh.h \
     vect.h
 
 QMAKE_CXXFLAGS+= -fopenmp

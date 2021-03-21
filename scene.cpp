@@ -3,6 +3,7 @@
 #include <math.h>
 #include <vect.h>
 #include <algorithm>
+#include <iostream>
 using namespace std;
 
 Scene::Scene(){
@@ -25,7 +26,7 @@ Vect& Scene::get_L(){
     return L;
 }
 
-void Scene::push(Sphere object){
+void Scene::push(Object* object){
     objects.push_back(object);
 }
 
@@ -39,14 +40,15 @@ bool Scene::intersect(Ray &r, Vect &P, Vect &N, Vect &albedo, bool &mirror,bool 
     for (int i = 0 ; i < get_objects_size(); i++){
         Vect localP, localN;
         double localt;
-        if (objects[i].intersect(r,localP,localN,localt) && localt < t){
+        bool intersect_result = objects[i]->intersect(r,localP,localN,localt);
+        if (intersect_result && localt < t){
             t = localt;
             has_inter = true;
-            albedo = objects[i].get_albedo();
+            albedo = objects[i]->get_albedo();
             P = localP;
             N = localN;
-            mirror = objects[i].get_isMirror();
-            transp = objects[i].get_isTransp();
+            mirror = objects[i]->get_isMirror();
+            transp = objects[i]->get_isTransp();
             objectid = i;
         }
     }
@@ -61,12 +63,14 @@ Vect Scene::getColor(Ray &r,int rebond,bool lastDiffus){
     bool inter = intersect(r,P,N,albedo,mirror,transp,t,objectid); // Determine s'il y a intersection entre la sphere et le rayon : si oui, P indique le point d'intersection sphere-ray et N le vecteur normale a la sphere au point P
     Vect color(0.,0.,0.);
 
+
+
     if (inter && rebond < 10){
 
         if (objectid == 0){
             if (rebond == 0 || !lastDiffus){
                 double I = get_I();
-                return Vect(I,I,I) / (4 * M_PI * M_PI * objects[0].get_R() * objects[0].get_R());
+                return Vect(I,I,I) / (4 * M_PI * M_PI * dynamic_cast<Sphere*>(objects[0])->get_R() * dynamic_cast<Sphere*>(objects[0])->get_R());
             }
             else{
                 return Vect(0, 0, 0);
@@ -117,7 +121,7 @@ Vect Scene::getColor(Ray &r,int rebond,bool lastDiffus){
                     Vect PL = L - P;
                     PL = PL.get_normalized();
                     Vect omega = random_cos(-PL);
-                    Vect xprime = omega * objects[0].get_R() + objects[0].get_O();
+                    Vect xprime = omega * dynamic_cast<Sphere*>(objects[0])->get_R() + dynamic_cast<Sphere*>(objects[0])->get_O();
                     Vect P_xprime = xprime - P;
                     double d = sqrt(P_xprime.sqrNorm());
                     P_xprime = P_xprime / d;
@@ -132,9 +136,10 @@ Vect Scene::getColor(Ray &r,int rebond,bool lastDiffus){
                         color = Vect(0.,0.,0.);
                     }
                     else {
-                        double proba = max(0.,dot(-PL,omega)) / (M_PI * objects[0].get_R() * objects[0].get_R());
-                        double J = dot(omega, -P_xprime)/(d*d);
-                        color = I / (4 * M_PI * M_PI * objects[0].get_R() * objects[0].get_R()) * albedo / M_PI * max(0.,dot(N,P_xprime)) * J / proba;
+                        double R2 = (dynamic_cast<Sphere*>(objects[0])->get_R()) * (dynamic_cast<Sphere*>(objects[0])->get_R());
+                        double proba = max(0.,dot(-PL,omega)) / (M_PI * dynamic_cast<Sphere*>(objects[0])->get_R() * dynamic_cast<Sphere*>(objects[0])->get_R());
+                        double J = max(0.,dot(omega, -P_xprime))/(d*d);
+                        color = I / (4 * M_PI * M_PI * R2) * albedo / M_PI * max(0.,dot(N,P_xprime)) * J / proba;
                     }
 
 
