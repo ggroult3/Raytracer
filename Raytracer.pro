@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        boundingbox.cpp \
         main.cpp \
         object.cpp \
         ray.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
         vect.cpp
 
 HEADERS += \
+    boundingbox.h \
     object.h \
     ray.h \
     scene.h \

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef TRIANGLEINDICES_H
 #define TRIANGLEINDICES_H
 

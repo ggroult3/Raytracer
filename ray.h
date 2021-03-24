@@ -1,16 +1,17 @@
+#pragma once
 #ifndef RAY_H
 #define RAY_H
 
-#include <vect.h>
+#include "Vect.h"
 
 class Ray
 {
 public:
-    Ray(const Vect& C1,const Vect& u1);
+    Ray(const Vect& C1, const Vect& u1);
     Vect& get_C();
     Vect& get_u();
 private:
-    Vect C,u;
+    Vect C, u;
 };
 
 #endif // RAY_H

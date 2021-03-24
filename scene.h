@@ -1,11 +1,12 @@
+#pragma once
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <sphere.h>
+#include "Sphere.h"
 #include <vector>
-#include <ray.h>
-#include <vect.h>
-#include <object.h>
+#include "Ray.h"
+#include "Vect.h"
+#include "Object.h"
 
 using namespace std;
 
@@ -20,8 +21,8 @@ public:
     Vect& get_L();
     void push(Object* object);
     int get_objects_size();
-    bool intersect(Ray& r,Vect& P,Vect& N,Vect& albedo,bool& mirror,bool& transp,double& t,int& objectid);
-    Vect getColor(Ray& r,int rebond,bool lastDiffus);
+    bool intersect(Ray& r, Vect& P, Vect& N, Vect& albedo, bool& mirror, bool& transp, double& t, int& objectid);
+    Vect getColor(Ray& r, int rebond, bool lastDiffus);
 private:
     double I;
     Vect L;
