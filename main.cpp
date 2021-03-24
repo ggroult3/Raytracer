@@ -110,11 +110,25 @@ int main()
     scene.push(&Ssol);
     cout << "before Mesh" << endl;
 
-    TriangleMesh m(Vect(1., 0.3, 0.2));
+    //TriangleMesh m(Vect(1., 0.3, 0.2));
     cout << "before readOBJ" << endl;
-    m.readOBJ("13463_Australian_Cattle_Dog_v3.obj");
+    //m.readOBJ("13463_Australian_Cattle_Dog_v3.obj");
+    TriangleMesh m2(Vect(1., 1., 1.));
+    m2.readOBJ("oot-link.obj");
+    
 
     cout << "before Transform" << endl;
+
+    
+    for (int i = 0; i < m2.vertices.size(); i++) {
+        m2.vertices[i][0] = 100 * m2.vertices[i][0];
+        m2.vertices[i][1] = 100 * m2.vertices[i][1];
+        m2.vertices[i][2] = 100 * m2.vertices[i][2];
+        m2.vertices[i][1] -= 10;
+    }
+    
+
+    /*
     for (int i = 0; i < m.vertices.size(); i++) {
         m.vertices[i][1] += 22;
         m.vertices[i][2] -= 10;
@@ -124,11 +138,14 @@ int main()
     for (int i = 0; i < m.normals.size(); i++) {
         swap(m.normals[i][1], m.normals[i][2]);
     }
+    */
     cout << "before buildBVH" << endl;
     //m.buildBB();
-    m.buildBVH(m.BVH, 0, m.indices.size());
+    //m.buildBVH(m.BVH, 0, m.indices.size());
+    m2.buildBVH(m2.BVH, 0, m2.indices.size());
     cout << "before push_back" << endl;
-    scene.push(&m);
+    //scene.push(&m);
+    scene.push(&m2);
 
 
 
@@ -188,7 +205,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_BVH_chien_ter.png", W, H, 3, &image[0], 0);
+    stbi_write_png("image_Link.png", W, H, 3, &image[0], 0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime, beginTime) << " seconde(s) !" << endl;
