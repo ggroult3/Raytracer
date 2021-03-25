@@ -283,7 +283,7 @@ void TriangleMesh::readOBJ(const char* obj) {
 
 }
 
-bool TriangleMesh::intersect(Ray& r, Vect& P, Vect& normale, double& t) {
+bool TriangleMesh::intersect(Ray& r, Vect& P, Vect& normale, double& t, Vect& color) {
 
     if (!BVH->b.intersect(r)) return false;
 
@@ -331,6 +331,18 @@ bool TriangleMesh::intersect(Ray& r, Vect& P, Vect& normale, double& t) {
                         normale = alpha * normals[indices[i].ni] + beta * normals[indices[i].nj] + gamma * normals[indices[i].nk];
                         normale = normale.get_normalized();
                         P = r.get_C() + t * r.get_u();
+                        Vect UV = alpha * uvs[indices[i].uvi] + beta * uvs[indices[i].uvj] + gamma * uvs[indices[i].uvk];
+                        int W = Wtex[0];
+                        int H = Htex[0];
+                        UV = UV * Vect(W, H, 0);
+                        int uvx = UV[0] + 0.5;
+                        int uvy = UV[1] + 0.5;
+                        uvx = uvx % W;
+                        uvy = uvy % H;
+                        if (uvx < 0) uvx += W;
+                        if (uvy < 0) uvy += H;
+                        uvy = H - uvy - 1;
+                        color = Vect(pow(textures[0][(uvy * W + uvx) * 3] / 255., 2.2), pow(textures[0][(uvy * W + uvx) * 3 + 1] / 255., 2.2), pow(textures[0][(uvy * W + uvx) * 3 + 2] / 255.,2.2));
                     }
                 }
             }
@@ -353,3 +365,14 @@ bool& TriangleMesh::get_isMirror() {
 bool& TriangleMesh::get_isTransp() {
     return isTransp;
 }
+
+
+void TriangleMesh::loadTexture(const char* filename) {
+    int W, H, C;
+    unsigned char* texture = stbi_load(filename, &W, &H, &C, 3);
+    Wtex.push_back(W);
+    Htex.push_back(H);
+    textures.push_back(texture);
+
+}
+

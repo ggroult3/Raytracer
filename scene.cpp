@@ -41,13 +41,13 @@ bool Scene::intersect(Ray& r, Vect& P, Vect& N, Vect& albedo, bool& mirror, bool
     t = 1E10;
     bool has_inter = false;
     for (int i = 0; i < get_objects_size(); i++) {
-        Vect localP, localN;
+        Vect localP, localN,localAlbedo;
         double localt;
-        bool intersect_result = objects[i]->intersect(r, localP, localN, localt);
+        bool intersect_result = objects[i]->intersect(r, localP, localN, localt,localAlbedo);
         if (intersect_result && localt < t) {
             t = localt;
             has_inter = true;
-            albedo = objects[i]->get_albedo();
+            albedo = localAlbedo;
             P = localP;
             N = localN;
             mirror = objects[i]->get_isMirror();

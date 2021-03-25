@@ -17,7 +17,7 @@ public:
     Vect& get_albedo();
     bool& get_isMirror();
     bool& get_isTransp();
-    bool intersect(Ray& r, Vect& P, Vect& N, double& t);
+    bool intersect(Ray& r, Vect& P, Vect& N, double& t,Vect& color);
 
 private:
     Vect O;

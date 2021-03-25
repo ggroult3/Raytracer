@@ -116,26 +116,31 @@ int main()
     cout << "before readOBJ" << endl;
     //m.readOBJ("13463_Australian_Cattle_Dog_v3.obj");
     
-    m2.readOBJ("oot-link.obj");
+    m2.readOBJ("Link.obj");
+    m2.loadTexture("Colo_Link.png");
     m3.readOBJ("deku-shield-oot.obj");
+    m3.loadTexture("00_BaseColor_Merged.png");
     
 
     cout << "before Transform" << endl;
 
     
     for (int i = 0; i < m2.vertices.size(); i++) {
-        m2.vertices[i][0] = 100 * m2.vertices[i][0];
-        m2.vertices[i][1] = 100 * m2.vertices[i][1];
-        m2.vertices[i][2] = 100 * m2.vertices[i][2];
-        m2.vertices[i][1] -= 10;
-        m2.vertices[i][2] += 10;
+        m2.vertices[i][0] = 0.35 * m2.vertices[i][0];
+        m2.vertices[i][1] = 0.35 * m2.vertices[i][1];
+        m2.vertices[i][2] = 0.35 * m2.vertices[i][2];
+        m2.vertices[i][1] -= 9;
+        m2.vertices[i][2] += 5;
+
+        
     }
 
     for (int i = 0; i < m3.vertices.size(); i++) {
         m3.vertices[i][0] = 10 * m3.vertices[i][0];
         m3.vertices[i][1] = 10 * m3.vertices[i][1];
         m3.vertices[i][2] = 10 * m3.vertices[i][2];
-        m3.vertices[i][0] += 20;
+        m3.vertices[i][2] -= 40;
+        m3.vertices[i][1] += 30;
     }
     
 
@@ -199,7 +204,6 @@ int main()
                 Vect Cprime = C + Vect(x3, x4, 0);
                 Vect uprime = (target - Cprime).get_normalized();
                 Ray r(Cprime, uprime);
-
                 color = color + scene.getColor(r, 0, false);
             }
             color = color / nbRays;
@@ -218,7 +222,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_Maillage_lisse.png", W, H, 3, &image[0], 0);
+    stbi_write_png("image_Diaroma.png", W, H, 3, &image[0], 0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime, beginTime) << " seconde(s) !" << endl;

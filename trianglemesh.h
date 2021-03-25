@@ -16,6 +16,7 @@
 #include "Object.h"
 #include "BoundingBox.h"
 #include "Noeud.h"
+#include "stb_image.h"
 
 using namespace std;
 
@@ -33,17 +34,21 @@ public:
 
     void readOBJ(const char* obj);
 
-    bool intersect(Ray& r, Vect& P, Vect& N, double& t);
+    bool intersect(Ray& r, Vect& P, Vect& N, double& t,Vect& color);
 
     Vect& get_albedo();
     bool& get_isMirror();
     bool& get_isTransp();
+
+    void loadTexture(const char* filename);
 
     vector<TriangleIndices> indices;
     vector<Vect> vertices;
     vector<Vect> normals;
     vector<Vect> uvs;
     vector<Vect> vertexcolors;
+    vector<unsigned char*> textures;
+    vector<int> Wtex, Htex;
     Noeud* BVH;
     BoundingBox bb;
 

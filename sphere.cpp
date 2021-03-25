@@ -48,7 +48,7 @@ bool& Sphere::get_isTransp() {
     return isTransp;
 }
 
-bool Sphere::intersect(Ray& r, Vect& P, Vect& N, double& t) {
+bool Sphere::intersect(Ray& r, Vect& P, Vect& N, double& t,Vect& color) {
     // solves a*t^2 + b*t + c = 0
     double a = 1;
     double b = 2 * dot(r.get_u(), r.get_C() - O);
@@ -69,6 +69,7 @@ bool Sphere::intersect(Ray& r, Vect& P, Vect& N, double& t) {
 
     P = r.get_C() + t * r.get_u(); // Point d'intersection le plus proche de la caméra
     N = (P - O).get_normalized();
+    color = this->get_albedo();
 
     return true;
 }

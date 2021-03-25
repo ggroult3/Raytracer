@@ -9,7 +9,7 @@ class Object
 {
 public:
     Object();
-    virtual bool intersect(Ray& r, Vect& P, Vect& normale, double& t) = 0;
+    virtual bool intersect(Ray& r, Vect& P, Vect& normale, double& t,Vect& color) = 0;
     virtual Vect& get_albedo() = 0;
     virtual bool& get_isMirror() = 0;
     virtual bool& get_isTransp() = 0;
