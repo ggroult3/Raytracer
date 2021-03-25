@@ -333,7 +333,6 @@ bool TriangleMesh::intersect(Ray& r, Vect& P, Vect& normale, double& t) {
                 }
             }
         }
-        
     }
 
     

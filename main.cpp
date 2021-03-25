@@ -111,10 +111,13 @@ int main()
     cout << "before Mesh" << endl;
 
     //TriangleMesh m(Vect(1., 0.3, 0.2));
+    TriangleMesh m2(Vect(1., 1., 1.));
+    TriangleMesh m3(Vect(1., 1., 1.));
     cout << "before readOBJ" << endl;
     //m.readOBJ("13463_Australian_Cattle_Dog_v3.obj");
-    TriangleMesh m2(Vect(1., 1., 1.));
+    
     m2.readOBJ("oot-link.obj");
+    m3.readOBJ("deku-shield-oot.obj");
     
 
     cout << "before Transform" << endl;
@@ -125,6 +128,14 @@ int main()
         m2.vertices[i][1] = 100 * m2.vertices[i][1];
         m2.vertices[i][2] = 100 * m2.vertices[i][2];
         m2.vertices[i][1] -= 10;
+        m2.vertices[i][2] += 10;
+    }
+
+    for (int i = 0; i < m3.vertices.size(); i++) {
+        m3.vertices[i][0] = 10 * m3.vertices[i][0];
+        m3.vertices[i][1] = 10 * m3.vertices[i][1];
+        m3.vertices[i][2] = 10 * m3.vertices[i][2];
+        m3.vertices[i][0] += 20;
     }
     
 
@@ -143,9 +154,11 @@ int main()
     //m.buildBB();
     //m.buildBVH(m.BVH, 0, m.indices.size());
     m2.buildBVH(m2.BVH, 0, m2.indices.size());
+    m3.buildBVH(m3.BVH, 0, m3.indices.size());
     cout << "before push_back" << endl;
     //scene.push(&m);
     scene.push(&m2);
+    scene.push(&m3);
 
 
 
@@ -180,8 +193,8 @@ int main()
                 // Effet de profondeur de champ
                 u1 = uniform(engine);
                 u2 = uniform(engine);
-                double x3 = 0.25 * cos(2 * M_PI * u1) * sqrt(-2 * log(u2));
-                double x4 = 0.25 * sin(2 * M_PI * u1) * sqrt(-2 * log(u2));
+                double x3 = 0.15 * cos(2 * M_PI * u1) * sqrt(-2 * log(u2));
+                double x4 = 0.15 * sin(2 * M_PI * u1) * sqrt(-2 * log(u2));
                 Vect target = C + 55 * u;
                 Vect Cprime = C + Vect(x3, x4, 0);
                 Vect uprime = (target - Cprime).get_normalized();
@@ -205,7 +218,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_Link.png", W, H, 3, &image[0], 0);
+    stbi_write_png("image_Link_and_Deku_shield.png", W, H, 3, &image[0], 0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime, beginTime) << " seconde(s) !" << endl;
