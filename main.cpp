@@ -218,7 +218,7 @@ int main()
         }
     }
 
-    stbi_write_png("image_Link_and_Deku_shield.png", W, H, 3, &image[0], 0);
+    stbi_write_png("image_Maillage_lisse.png", W, H, 3, &image[0], 0);
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime, beginTime) << " seconde(s) !" << endl;

@@ -327,7 +327,9 @@ bool TriangleMesh::intersect(Ray& r, Vect& P, Vect& normale, double& t) {
                     has_inter = true;
                     if (localt < t) {
                         t = localt;
-                        normale = N.get_normalized();
+                        // normale = N.get_normalized();
+                        normale = alpha * normals[indices[i].ni] + beta * normals[indices[i].nj] + gamma * normals[indices[i].nk];
+                        normale = normale.get_normalized();
                         P = r.get_C() + t * r.get_u();
                     }
                 }
