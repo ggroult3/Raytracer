@@ -58,9 +58,16 @@ void integrateCos() {
     cout << s << endl;
 }
 
-int main()
-{
+int main(){
+
+    int c = 10; // Pour faire varier l'inclinaison verticale (0 pour 0 deg, 10 pour 30 deg)
+    int q = 10; // Pour faire varier la position verticale de la camera (1 pour 2)
+    int b = 10; // Pour faire varier l'inclinaison horizontale 
+    int d = 10;
+
+
     cout << "start" << endl;
+    cout << to_string(c) + ".png" << endl;
     time_t beginTime, endTime;
     time(&beginTime);
     //integrateCos();
@@ -78,9 +85,6 @@ int main()
     scene.set_L(L);
 
     cout << "before Sphere" << endl;
-
-    Vect C(0, 0, 55); // Position de la camera
-    double fov = 60 * M_PI / 180; // Champ de vision de la camera
 
     Sphere Slumiere(scene.get_L(), 5, Vect(1., 1, 1));
     // Sphere S1(Vect(0,0,0),10,Vect(1.,0.3,0.2));
@@ -164,8 +168,20 @@ int main()
     //scene.push(&m);
     scene.push(&m2);
     scene.push(&m3);
+    Vect C(0+d*2, q*2, 55-d*5); // Position de la camera
+    double fov = 60 * M_PI / 180; // Champ de vision de la camera
 
+    // Rotation verticale de la caméra 
+    double thetaH = -40 * b / 10 * M_PI / 180;
+    double thetaV = -30 * c / 10 * M_PI / 180;
+    Vect up(0, cos(thetaV), sin(thetaV));
 
+    // Rotation horizontale de la caméra
+    Vect right(cos(thetaH), 0, sin(thetaH));
+    double up_0 = up[0];
+    up[0] = cos(thetaH) * up_0 - sin(thetaH) * up[2]; // Application de la formule de Rodrigue
+    up[2] = sin(thetaH) * up_0 + cos(thetaH) * up[2];
+    Vect viewDir = -cross(up, right);
 
     int nbRays = 100;
     cout << "before pragma" << endl;
@@ -194,6 +210,7 @@ int main()
 
                 Vect u(j - W / 2 + x2 + 0.5, i - H / 2 + x1 + 0.5, -W / (2. * tan(fov / 2))); // Vecteur directeur du rayon émis de la caméra
                 u = u.get_normalized(); // Le vecteur directeur doit être unitaire
+                u = u[0] * right + u[1] * up + u[2] * viewDir;
 
                 // Effet de profondeur de champ
                 u1 = uniform(engine);
@@ -201,7 +218,7 @@ int main()
                 double x3 = 0.15 * cos(2 * M_PI * u1) * sqrt(-2 * log(u2));
                 double x4 = 0.15 * sin(2 * M_PI * u1) * sqrt(-2 * log(u2));
                 Vect target = C + 55 * u;
-                Vect Cprime = C + Vect(x3, x4, 0);
+                Vect Cprime = C + x3*right + x4*up;
                 Vect uprime = (target - Cprime).get_normalized();
                 Ray r(Cprime, uprime);
                 color = color + scene.getColor(r, 0, false);
@@ -222,7 +239,8 @@ int main()
         }
     }
 
-    stbi_write_png("image_Diaroma.png", W, H, 3, &image[0], 0);
+    stbi_write_png("image_mouvement_camera.png", W, H, 3, &image[0], 0);
+    
 
     time(&endTime);
     cout << "Cela dure " << difftime(endTime, beginTime) << " seconde(s) !" << endl;
